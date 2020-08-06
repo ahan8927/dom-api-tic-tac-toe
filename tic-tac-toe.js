@@ -1,4 +1,9 @@
 window.addEventListener("DOMContentLoaded", event => {
+  let title = document.getElementById("game-status");
+  if(localStorage.getItem("title") === null){
+    localStorage.setItem("title", "Tic-Tac-Toe!");
+  }
+  title.innerHTML = localStorage.getItem("title");
 
   const ticTacToe = document.getElementById('tic-tac-toe-board');
   let updateStorage = () => {
@@ -93,13 +98,12 @@ window.addEventListener("DOMContentLoaded", event => {
     for (let i = 0; i < winConditions.length; i++) {
 
       if (xArr.includes(winConditions[i][0]) && xArr.includes(winConditions[i][1]) && xArr.includes(winConditions[i][2])) {
-        alert("X's win!");
+        localStorage.setItem("title", "X's Win!!");
       }
 
       if (oArr.includes(winConditions[i][0]) && oArr.includes(winConditions[i][1]) && oArr.includes(winConditions[i][2])) {
-        alert("O's win!");
+        localStorage.setItem("title", "O's Win!!");
       }
-
     }
   }
 
