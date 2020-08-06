@@ -1,32 +1,66 @@
 window.addEventListener("DOMContentLoaded", event => {
 
   const ticTacToe = document.getElementById('tic-tac-toe-board');
+  let updateStorage = () => {
+    ticTacToe.addEventListener("click", event1 => {
+      addImage = () => {
+        let symbol = "/x.svg"
+        let turnCounter = localStorage.getItem("turnCounter");
+        if (turnCounter % 2 === 0) {
+          symbol = "/x.svg"
+        } else {
+          symbol = "/o.svg"
+        }
 
-  turnCounter = 0;
+        let key = event1.target.id
+        localStorage.setItem(key, symbol);
 
-  ticTacToe.addEventListener("click", event => {
-    addImage = () => {
-      newImage = document.createElement('img');
-      let symbol = "/x.svg"
-      turnCounter++;
-      if (turnCounter % 2 === 0) {
-        symbol = "/x.svg"
-      } else {
-        symbol = "/o.svg"
+        if(localStorage.getItem("turnCounter") === null){
+          localStorage.setItem("turnCounter", 1);
+        }
+        else{
+          let turnCounter = Number(localStorage.getItem("turnCounter")) + 1;
+          localStorage.setItem("turnCounter", turnCounter);
+        }
+        // document.getElementById(event1.target.id).appendChild(newImage);
       }
-      newImage.setAttribute('src', symbol)
-      newImage.setAttribute('id', 'image')
+  
+      if (event1.target.id !== 'image') {
+        addImage();
+        location.reload();
+      }
+    });
+  }
 
-      //addStorage here
+  //show Storage.
+  let showStorage = () => {
+    let squares = document.querySelectorAll(".square");
+    squares.forEach(square => {
+      let value = localStorage.getItem(square.id);
+      if(value !== null){
+        newImage = document.createElement('img');
 
-      document.getElementById(event.target.id).appendChild(newImage);
-    }
+        newImage.setAttribute('src', value)
+        newImage.setAttribute('id', 'image')
+        
+        square.appendChild(newImage);
+      }
+    });
 
-    if (event.target.id !== 'image') {
-      addImage();
-    }
-  });
+    // document.getElementById(event1.target.id).appendChild(newImage);
+  }
 
-  //update storage
+  //newGame
+  let newGame = () => {
+    let button = document.querySelector(".actions");
+    button.addEventListener("click", eve => {
+      localStorage.clear();
+      location.reload();
+    });
+  }
 
+
+  updateStorage();
+  showStorage();
+  newGame();
 });
