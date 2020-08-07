@@ -3,9 +3,20 @@ window.addEventListener("DOMContentLoaded", event => {
   if(localStorage.getItem("title") === null){
     localStorage.setItem("title", "Tic-Tac-Toe!");
   }
+  
   title.innerHTML = localStorage.getItem("title");
 
+  //run computer move first -- check if x or o then input as necessary
+  // random true / false? if true computer is x & places first move
+  // let computerMove = function(){
+
+  // }
+  // computerMove();
+
+  
   const ticTacToe = document.getElementById('tic-tac-toe-board');
+  
+  
   let updateStorage = () => {
     ticTacToe.addEventListener("click", event1 => {
       addImage = () => {
@@ -38,13 +49,14 @@ window.addEventListener("DOMContentLoaded", event => {
         } else {
           setArr();
         }
-
-        // document.getElementById(event1.target.id).appendChild(newImage);
       }
 
-      if (event1.target.id !== 'image') {
+      if ((event1.target.id !== 'image') && (title.innerHTML === "Tic-Tac-Toe!")) {
         addImage();
+        actions();
+        //computerMove();
         location.reload();
+
         setTimeout(gameStatus(), 0);
 
       }
@@ -67,17 +79,44 @@ window.addEventListener("DOMContentLoaded", event => {
         ticTacArray.push()
       }
     });
-
     // document.getElementById(event1.target.id).appendChild(newImage);
   }
 
   //newGame
-  let newGame = () => {
-    let button = document.querySelector(".actions");
-    button.addEventListener("click", eve => {
-      localStorage.clear();
+  let actions = () => {
+    
+    let button = document.querySelectorAll(".actions > button");
+    console.log(button[0]);
+    if(title.innerHTML === "Tic-Tac-Toe!"){
+      button[0].setAttribute("disabled", "true");
+      button[1].removeAttribute("disabled");
+    }
+    else{
+      button[0].removeAttribute("disabled");
+      button[1].setAttribute("disabled", 'true');
+    }
+    button[0].addEventListener("click", eve => {
+        localStorage.clear();
+        location.reload();
+    });
+    button[1].addEventListener("click", eve => {
+      let xArr = JSON.parse(localStorage.getItem("xArr"));
+      let oArr = JSON.parse(localStorage.getItem('oArr'));
+      if((xArr.length + oArr.length) % 2 === 0){
+        localStorage.setItem("title", "O's Win!!");
+      }
+      else{
+        localStorage.setItem("title", "X's Win!!");
+      }
       location.reload();
     });
+    /*
+      let _ = document.querySelectorAll(".actions");
+
+        eve.target.value === _[3].inner
+
+    */
+    //eve.target.value === 
   }
 
   let gameStatus = () => {
@@ -94,23 +133,28 @@ window.addEventListener("DOMContentLoaded", event => {
       [0, 4, 8],
       [2, 4, 6]
     ]
-
+    
+    //Change Title
     for (let i = 0; i < winConditions.length; i++) {
-
       if (xArr.includes(winConditions[i][0]) && xArr.includes(winConditions[i][1]) && xArr.includes(winConditions[i][2])) {
         localStorage.setItem("title", "X's Win!!");
+        return;
       }
 
       if (oArr.includes(winConditions[i][0]) && oArr.includes(winConditions[i][1]) && oArr.includes(winConditions[i][2])) {
         localStorage.setItem("title", "O's Win!!");
+        return;
       }
+    }
+
+    if(xArr.length + oArr.length === 9){
+      localStorage.setItem("title", "It is a tie!");
     }
   }
 
-
   updateStorage();
   showStorage();
-  newGame();
+  actions();
 });
 
 /*
@@ -134,31 +178,11 @@ oarr
 8 -- diag 2 (2,4,6)
 
 */
+
 /*
-  });
-	xArr.for(let i = 0; i < xArr.length; i++) {
-		if (xArr[]
-		if((xArr[i-1] === xArr[i]) || xArr[i][j - 1] === xArr[i][j]){
-
-		}
-	})
-
-	1,2,
-	1,2,3
-
-	aple
-	apple
-
-	321
-	123
-*/
-/*
-for(xArr){
-	for(winCond){
-		if(winCond[j].includes(xArr[i]){
-      xArr[i].includes(winCond[j])
-
-		}
-	}
-}
+whenever we click a space, we push that onto an arry and remove it from 'potential move' array
+generate random number from 0 to length of array
+inserts into the position
+let random = Math.floor(Math.rand() * Math.floor(arr.length));
+check game status after computer move
 */
