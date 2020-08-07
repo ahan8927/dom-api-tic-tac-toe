@@ -2,61 +2,90 @@ window.addEventListener("DOMContentLoaded", event => {
   let title = document.getElementById("game-status");
   if(localStorage.getItem("title") === null){
     localStorage.setItem("title", "Tic-Tac-Toe!");
+    localStorage.setItem('computerArray',JSON.stringify([0,1,2,3,4,5,6,7,8]));
+    localStorage.setItem('computerTurn', JSON.stringify(Math.random() <= 0.5));
   }
   
   title.innerHTML = localStorage.getItem("title");
 
+  
   //run computer move first -- check if x or o then input as necessary
   // random true / false? if true computer is x & places first move
-  // let computerMove = function(){
+  let computerMove = function(){
+    computerArray = JSON.parse(localStorage.getItem('computerArray'));
+    computerTurn = JSON.parse(localStorage.getItem('computerTurn'));
+    //random number getelementbyid sqaure-randomnum .click onthis
+    //element.click
+    //addImage(element);
 
-  // }
-  // computerMove();
+    if ( !computerTurn ){
+      return;
+    }
+
+    let rand = Math.floor(Math.random() * Math.floor(computerArray.length));
+    let moveStr = "square-" + computerArray[rand];
+
+    let computerImg = document.getElementById(moveStr);
+    
+    
+    // addImage(computerImg.click());
+    
+    computerImg.click(event => {
+      addImage(event);
+    });
+    
+  }
 
   
   const ticTacToe = document.getElementById('tic-tac-toe-board');
   
-  
-  let updateStorage = () => {
-    ticTacToe.addEventListener("click", event1 => {
-      addImage = () => {
-        let symbol = "/x.svg"
-        let xArr = JSON.parse(localStorage.getItem("xArr"));
-        let oArr = JSON.parse(localStorage.getItem('oArr'));
+  let addImage = function(event1) {
+    let symbol = "/x.svg"
+    let xArr = JSON.parse(localStorage.getItem("xArr"));
+    let oArr = JSON.parse(localStorage.getItem('oArr'));
+    let computerArray = JSON.parse(localStorage.getItem('computerArray'));
 
-        let setArr = function () {
-          if ((xArr.length + oArr.length) % 2 === 0) {
-            symbol = "/x.svg"
-            xArr.push(Number(event1.target.id[7]))
-            xStr = JSON.stringify(xArr)
-            localStorage.setItem('xArr', xStr);
-          } else {
-            symbol = "/o.svg"
-            oArr.push(Number(event1.target.id[7]))
-            oStr = JSON.stringify(oArr)
-            localStorage.setItem('oArr', oStr);
-          }
-
-          let key = event1.target.id
-          localStorage.setItem(key, symbol);
-        }
-
-        if (xArr === null || oArr === null) {
-          initialStr = JSON.stringify([]);
-          localStorage.setItem('xArr', initialStr);
-          localStorage.setItem('oArr', initialStr);
-          addImage();
-        } else {
-          setArr();
-        }
+    let setArr = function () {
+      if ((xArr.length + oArr.length) % 2 === 0) {
+        symbol = "/x.svg"
+        xArr.push(Number(event1.target.id[7]))
+        computerArray.splice(computerArray.indexOf(Number(event1.target.id[7])), 1);
+        let xStr = JSON.stringify(xArr);
+        localStorage.setItem('xArr', xStr);
+        localStorage.setItem('computerTurn', !JSON.parse(localStorage.getItem('computerTurn')));
+      } else {
+        symbol = "/o.svg"
+        oArr.push(Number(event1.target.id[7]))
+        computerArray.splice(computerArray.indexOf(Number(event1.target.id[7])), 1);
+        let oStr = JSON.stringify(oArr)
+        localStorage.setItem('oArr', oStr);
+        localStorage.setItem('computerTurn', !JSON.parse(localStorage.getItem('computerTurn')));
       }
 
-      if ((event1.target.id !== 'image') && (title.innerHTML === "Tic-Tac-Toe!")) {
-        addImage();
-        actions();
-        //computerMove();
-        location.reload();
+      let computerStr = JSON.stringify(computerArray);
+      localStorage.setItem('computerArray',computerStr)
+      let key = event1.target.id
+      localStorage.setItem(key, symbol);
+    }
 
+    if (xArr === null || oArr === null) {
+      initialStr = JSON.stringify([]);
+      localStorage.setItem('xArr', initialStr);
+      localStorage.setItem('oArr', initialStr);
+      localStorage.setItem('computerArray',JSON.stringify([0,1,2,3,4,5,6,7,8]));
+      addImage(event1);
+    } else {
+      setArr();
+    }
+  }
+  
+  let updateStorage = () => {
+    ticTacToe.addEventListener("click",  event1=> {
+      if ((event1.target.id !== 'image') && (title.innerHTML === "Tic-Tac-Toe!")) {
+        addImage(event1);
+        actions();
+        computerMove();
+        location.reload();
         setTimeout(gameStatus(), 0);
 
       }
@@ -86,7 +115,6 @@ window.addEventListener("DOMContentLoaded", event => {
   let actions = () => {
     
     let button = document.querySelectorAll(".actions > button");
-    console.log(button[0]);
     if(title.innerHTML === "Tic-Tac-Toe!"){
       button[0].setAttribute("disabled", "true");
       button[1].removeAttribute("disabled");
@@ -154,7 +182,9 @@ window.addEventListener("DOMContentLoaded", event => {
 
   updateStorage();
   showStorage();
+  computerMove();
   actions();
+
 });
 
 /*
