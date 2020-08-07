@@ -1,45 +1,67 @@
 window.addEventListener("DOMContentLoaded", event => {
+  //set title and local storage
+  console.log(1);
   let title = document.getElementById("game-status");
+  const ticTacToe = document.getElementById('tic-tac-toe-board');
   if(localStorage.getItem("title") === null){
     localStorage.setItem("title", "Tic-Tac-Toe!");
     localStorage.setItem('computerArray',JSON.stringify([0,1,2,3,4,5,6,7,8]));
     localStorage.setItem('computerTurn', JSON.stringify(Math.random() <= 0.5));
   }
-  
   title.innerHTML = localStorage.getItem("title");
+  let turn = document.createElement("div");
+  turn.setAttribute("class", "announcement");
+  turn.innerHTML = "";
+  title.after(turn);
 
+  //turn title function
+  let changeTitle = function(bool_val, array1) {
+    console.log(8);
+    if(array1.length < 9){
+   let gameFinished = gameStatus();
   
-  //run computer move first -- check if x or o then input as necessary
-  // random true / false? if true computer is x & places first move
+    if (gameFinished){
+      turn.innerHTML = "Game Complete!"
+      return;
+    }
+  }
+    if ((!computerTurn || computerArray.length === 0)){
+      turn.innerHTML = "Player's Turn";
+      return 1;
+    }
+    else{
+      turn.innerHTML = "Computer's turn";
+      return 0;
+    }
+    
+ 
+  }
+
+  //computer move
   let computerMove = function(){
+    console.log(2);
     computerArray = JSON.parse(localStorage.getItem('computerArray'));
     computerTurn = JSON.parse(localStorage.getItem('computerTurn'));
-    //random number getelementbyid sqaure-randomnum .click onthis
-    //element.click
-    //addImage(element);
-
-    if ( !computerTurn ){
+    
+    let bla = changeTitle(computerTurn, computerArray);
+    if(bla){
       return;
     }
 
     let rand = Math.floor(Math.random() * Math.floor(computerArray.length));
     let moveStr = "square-" + computerArray[rand];
-
     let computerImg = document.getElementById(moveStr);
     
-    
     // addImage(computerImg.click());
-    
-    computerImg.click(event => {
-      addImage(event);
-    });
-    
+    setTimeout(function(){
+      computerImg.click(event => {
+        addImage(event);
+      });
+    },500);
   }
-
-  
-  const ticTacToe = document.getElementById('tic-tac-toe-board');
   
   let addImage = function(event1) {
+    console.log(3);
     let symbol = "/x.svg"
     let xArr = JSON.parse(localStorage.getItem("xArr"));
     let oArr = JSON.parse(localStorage.getItem('oArr'));
@@ -79,21 +101,23 @@ window.addEventListener("DOMContentLoaded", event => {
     }
   }
   
+  //update storage. 
   let updateStorage = () => {
+    console.log(4);
     ticTacToe.addEventListener("click",  event1=> {
       if ((event1.target.id !== 'image') && (title.innerHTML === "Tic-Tac-Toe!")) {
         addImage(event1);
         actions();
         computerMove();
+        gameStatus();
         location.reload();
-        setTimeout(gameStatus(), 0);
-
       }
     });
   }
 
   //show Storage.
   let showStorage = () => {
+    console.log(5);
     let squares = document.querySelectorAll(".square");
     let ticTacArray = [];
     squares.forEach(square => {
@@ -113,7 +137,7 @@ window.addEventListener("DOMContentLoaded", event => {
 
   //newGame
   let actions = () => {
-    
+    console.log(6);
     let button = document.querySelectorAll(".actions > button");
     if(title.innerHTML === "Tic-Tac-Toe!"){
       button[0].setAttribute("disabled", "true");
@@ -138,16 +162,10 @@ window.addEventListener("DOMContentLoaded", event => {
       }
       location.reload();
     });
-    /*
-      let _ = document.querySelectorAll(".actions");
-
-        eve.target.value === _[3].inner
-
-    */
-    //eve.target.value === 
   }
 
   let gameStatus = () => {
+    console.log(7);
     let xArr = JSON.parse(localStorage.getItem("xArr"));
     let oArr = JSON.parse(localStorage.getItem("oArr"));
     let connected = 0;
@@ -166,17 +184,18 @@ window.addEventListener("DOMContentLoaded", event => {
     for (let i = 0; i < winConditions.length; i++) {
       if (xArr.includes(winConditions[i][0]) && xArr.includes(winConditions[i][1]) && xArr.includes(winConditions[i][2])) {
         localStorage.setItem("title", "X's Win!!");
-        return;
+        return true;
       }
 
       if (oArr.includes(winConditions[i][0]) && oArr.includes(winConditions[i][1]) && oArr.includes(winConditions[i][2])) {
         localStorage.setItem("title", "O's Win!!");
-        return;
+        return true;
       }
     }
 
     if(xArr.length + oArr.length === 9){
       localStorage.setItem("title", "It is a tie!");
+      return true;
     }
   }
 
@@ -184,7 +203,6 @@ window.addEventListener("DOMContentLoaded", event => {
   showStorage();
   computerMove();
   actions();
-
 });
 
 /*
